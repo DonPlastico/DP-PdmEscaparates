@@ -1,7 +1,6 @@
 -- =================================================================
 -- OPTIMIZACIÓN: CACHÉ DE NATIVAS (Esto mejora el rendimiento drásticamente)
 -- =================================================================
-
 local isMenuOpen = false
 local spawnedShowroomVehicles = {}
 local nearbyVehicles = {}
@@ -235,7 +234,7 @@ end)
 CreateThread(function()
     while true do
         local myCoords = GetEntityCoords(PlayerPedId())
-        local tempNearby = {}
+        nearbyVehicles = {}
         local count = 0
 
         for id, data in pairs(spawnedShowroomVehicles) do
@@ -244,7 +243,7 @@ CreateThread(function()
                 -- [OPTIMIZACIÓN] Reducido de 15.0 a 8.0 para procesar menos
                 if dist < 8.0 then
                     count = count + 1
-                    tempNearby[count] = {
+                    nearbyVehicles[count] = {
                         id = id,
                         entity = data.entity,
                         info = data.info
@@ -253,7 +252,6 @@ CreateThread(function()
             end
         end
 
-        nearbyVehicles = tempNearby
         Wait(400) -- Ejecutar menos veces por segundo (aprox 2.5 veces)
     end
 end)
