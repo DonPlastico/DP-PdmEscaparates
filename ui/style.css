@@ -1,0 +1,635 @@
+/* =================================================================
+   1. VARIABLES Y CONFIGURACIÓN GLOBAL
+   ================================================================= */
+:root {
+    /* Paleta de Colores */
+    --primary-color: rgba(255, 255, 255, 1);
+    /* Texto principal */
+    --secondary-color: rgba(255, 255, 255, 0.8);
+    /* Texto secundario / Iconos */
+    --bg-color: rgba(0, 0, 0, 0.9);
+    /* Fondo principal del menú */
+
+    /* Estados y Bordes */
+    --hover-color: rgba(255, 255, 255, 0.2);
+    /* Color al pasar el mouse */
+    --border-color: rgba(255, 255, 255, 0.1);
+    /* Líneas divisorias */
+    --hover-bg: rgb(0, 0, 0);
+    /* Fondo de tablas/elementos */
+
+    /* Propiedades Visuales */
+    --border-radius: 8px;
+    --box-shadow: 0 0 0.8vh black;
+    --transition: all 0.2s ease;
+    /* Suavizado de animaciones */
+    --focus-color: #2c77a8;
+}
+
+/* Reset básico para consistencia */
+* {
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Configuración del Cuerpo (Transparente para FiveM) */
+body {
+    background-color: transparent;
+    user-select: none;
+    /* Evita que se seleccione texto al hacer click */
+    width: 100%;
+    height: 100%;
+    color: var(--primary-color);
+    overflow: hidden !important;
+    /* IMPORTANTE: Hidden para evitar scrollbars globales */
+}
+
+/* =================================================================
+   2. PERSONALIZACIÓN DEL SCROLLBAR (Barra de desplazamiento)
+   ================================================================= */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* =================================================================
+   3. CONTENEDOR PRINCIPAL (EL MENÚ)
+   ================================================================= */
+.menu-container {
+    display: none;
+    /* Oculto por defecto, JS lo activa con 'flex' o 'block' */
+    position: absolute;
+
+    /* Posicionamiento: Centrado verticalmente, alineado a la derecha */
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    min-height: 54%;
+
+    /* Estilos Visuales */
+    background: var(--bg-color);
+    color: var(--primary-color);
+    opacity: 0.90;
+    border: 0.5px solid var(--border-color);
+    border-radius: 5px 0 0 5px;
+    box-shadow: var(--box-shadow);
+    padding: 10px;
+
+    /* Flexbox para estructura interna */
+    flex-direction: column;
+    transform-origin: right center;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+/* Efecto de desenfoque cuando se abre un modal */
+.menu-container.modal-active {
+    filter: blur(2px);
+    transition: filter 0.2s ease;
+}
+
+/* =================================================================
+   4. ENCABEZADO Y DESCRIPCIÓN
+   ================================================================= */
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.search-and-description {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 20px;
+}
+
+.menu-description {
+    font-size: 14px;
+    color: var(--secondary-color);
+    line-height: 1.5;
+    flex-grow: 1;
+    margin-bottom: 0;
+}
+
+/* =================================================================
+   5. COMPONENTE: BOTONES
+   ================================================================= */
+
+/* Botones de acción superior (Establecer Spawn, Asignar Vehículo) */
+.btn-action {
+    align-items: center;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: var(--primary-color);
+    padding: 10px;
+    border-radius: 3px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.btn-action:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-5px);
+    box-shadow: 0 0 10px rgb(255 255 255 / 20%);
+}
+
+/* Botones Primarios (Guardar, Confirmar) */
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    /* Texto negro sobre fondo blanco */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    font-size: 14px;
+    margin-right: 15px;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Botones Secundarios (Cancelar) */
+.btn-secondary {
+    background-color: var(--hover-color);
+    color: var(--primary-color);
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+}
+
+.btn-secondary:hover {
+    background-color: var(--hover-color);
+    border-color: var(--secondary-color);
+}
+
+/* Botones de Icono (Editar, Eliminar en la tabla) */
+.btn-icon {
+    cursor: pointer;
+    padding: 10px;
+    margin: 0 2px;
+    color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 3px;
+    transition: var(--transition);
+}
+
+.btn-icon:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 10px rgb(255 255 255 / 20%);
+}
+
+/* Botón especial para copiar coordenadas */
+.btn-copy {
+    height: 45px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: white;
+    background-color: var(--hover-color);
+    font-weight: 600;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-copy:hover {
+    background-color: var(--hover-color);
+}
+
+/* =================================================================
+   6. COMPONENTE: TABLA DE DATOS
+   ================================================================= */
+.table-container {
+    overflow-x: auto;
+    /* Esto hace que la tabla ocupe todo el espacio vertical disponible */
+    flex-grow: 1;
+    /* Si la lista es muy larga, el scroll sale DENTRO de la tabla, no en todo el menú */
+    overflow-y: auto;
+
+    /* Pequeño margen para que no se pegue totalmente al botón */
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    border-radius: 5px;
+    background-color: var(--hover-bg);
+}
+
+th,
+td {
+    max-width: 5px;
+    padding: 5px 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Estilos de Encabezado (TH) */
+thead th {
+    position: relative;
+    padding-left: 1px;
+    display: table-cell;
+    background-color: transparent;
+    color: var(--secondary-color);
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+/* Efectos Hover en Encabezados */
+thead th:hover:not(.active-sort) {
+    background: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 10px rgb(255 255 255 / 20%);
+    border-radius: 5px 5px 0 0;
+}
+
+/* Estado Activo (Columna ordenada actualmente) */
+thead th.active-sort {
+    color: var(--primary-color);
+    background-color: var(--hover-color);
+    border-radius: 5px 5px 0 0;
+}
+
+thead th.active-sort .sort-icon {
+    color: var(--primary-color);
+}
+
+/* Iconos de Ordenación (Flechas) */
+.sort-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-color);
+}
+
+/* Lógica de visualización de iconos (Controlada por clases JS) */
+thead th i.fa-sort-up,
+thead th i.fa-sort-down {
+    display: none;
+}
+
+thead th.sort-asc .sort-icon i.fa-sort-up {
+    display: inline-block;
+}
+
+thead th.sort-desc .sort-icon i.fa-sort-down {
+    display: inline-block;
+}
+
+thead th.active-sort .sort-icon i.fa-sort {
+    display: none;
+}
+
+/* Ocultar el icono neutro si está activo */
+
+/* Filas del cuerpo */
+tbody tr:hover {
+    background-color: var(--hover-color);
+}
+
+.centro {
+    text-align: center;
+}
+
+.no-data-row {
+    text-align: center;
+    font-style: italic;
+    color: var(--secondary-color);
+    padding: 20px !important;
+}
+
+/* =================================================================
+   7. COMPONENTE: INPUTS Y FORMULARIOS
+   ================================================================= */
+label {
+    font-weight: 500;
+    color: var(--secondary-color);
+    font-size: 14px;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--hover-color);
+    color: var(--primary-color);
+    box-sizing: border-box;
+    transition: var(--transition);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 1px var(--secondary-color);
+    outline: none;
+}
+
+/* Personalización del Select (Flecha custom) */
+select {
+    font-size: 14px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Flecha SVG en base64 para que sea blanca */
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%23FFFFFF"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+}
+
+select option {
+    background-color: #333;
+    color: white;
+    padding: 5px;
+}
+
+/* Buscador Específico */
+.search-container {
+    position: relative;
+    width: 300px;
+}
+
+#vehicle-search-input {
+    width: 100%;
+    padding: 8px 10px 8px 35px;
+    /* Espacio a la izquierda para el icono */
+    border-radius: 5px;
+    background-color: var(--hover-color);
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    font-size: 14px;
+    height: 40px;
+    box-sizing: border-box;
+    margin-bottom: 0 !important;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-color);
+    font-size: 14px;
+}
+
+/* =================================================================
+   8. COMPONENTE: MODALES (Ventanas Emergentes)
+   ================================================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    border-radius: 5px;
+    padding: 30px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--border-color);
+    width: 650px;
+    transition: var(--transition);
+}
+
+.modal-content h3 {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.modal-content p {
+    font-size: 14px;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-actions-alt {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.coords-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.coord-box {
+    flex-grow: 1;
+    width: 0;
+}
+
+.coords-container input[type="text"] {
+    width: 100%;
+    height: 45px;
+    text-align: center;
+    padding: 10px 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--hover-color);
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* =================================================================
+   9. COMPONENTE: PAGINACIÓN
+   ================================================================= */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    /* Esto asegura que se pegue al fondo si 'flex-grow' fallase por alguna razón */
+    margin-top: auto;
+    padding-top: 10px;
+
+    /* Evita que el footer se aplaste si la ventana es muy pequeña */
+    flex-shrink: 0;
+
+    /* Borde superior opcional para separar visualmente el footer */
+    border-top: 1px solid var(--border-color);
+    width: 100%;
+}
+
+.page-button {
+    background-color: var(--hover-color);
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transition);
+}
+
+.page-button:hover:not(:disabled) {
+    background-color: var(--hover-color);
+    border-color: var(--secondary-color);
+}
+
+.page-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.current-page {
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    padding: 10px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+/* =================================================================
+   10. ESTILOS PARA LAS ETIQUETAS FLOTANTES (HUD)
+   ================================================================= */
+
+/* Contenedor transparente que cubre toda la pantalla */
+#hud-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+    overflow: hidden;
+}
+
+/* La tarjeta individual de información del vehículo (Diseño unificado con el menú) */
+.vehicle-tag {
+    position: absolute;
+    min-width: 180px;
+    transform: translate(-50%, -100%);
+    font-family: 'Arial', sans-serif;
+
+    /* Estilos Visuales */
+    background: var(--bg-color);
+    color: var(--primary-color);
+    opacity: 0.90;
+    border: 0.5px solid var(--border-color);
+    border-radius: 5px;
+    box-shadow: var(--box-shadow);
+    padding: 10px;
+
+    /* Flexbox para estructura interna */
+    flex-direction: column;
+    transform-origin: right center;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+/* Título (Nombre del Coche) - Estilo de encabezado */
+.tag-title {
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Subtítulo (Nombre del Spot) - Estilo de descripción */
+.tag-spot {
+    color: var(--secondary-color);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Información extra (Autor) - Estilo de footer pequeño */
+.tag-info {
+    font-size: 12px;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+/* Nombre del autor resaltado */
+.tag-info strong {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+/* Estilo del precio en la etiqueta */
+.tag-price {
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 4px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 4px;
+}
