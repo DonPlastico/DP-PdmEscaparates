@@ -10,7 +10,7 @@ game 'gta5'
 -- Metadatos del recurso (Información visible en la consola o monitor)
 author 'DP-Scripts'
 description 'Script de escaparate PDM para Cardealers con multi-framework y localización'
-version '1.2.0'
+version '1.2.5'
 
 -- =================================================================
 -- DEPENDENCIAS (RECURSOS REQUERIDOS)
